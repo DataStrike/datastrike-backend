@@ -1,0 +1,49 @@
+@startuml
+!theme vibrant
+component VPS {
+
+    component DOCKER_COMPOSE_NETWORK {
+
+        rectangle NGINX_C {
+        }
+
+        rectangle DB {
+        }
+
+        queue "       kafka       " as kafka
+
+        rectangle ADONIS_JS {
+        }
+
+
+        rectangle SERVICE_PYTHON {
+        }
+
+        interface "80" as port80_nginx
+        interface "PORT_ADONIS" as port_adonis
+        interface "PORT_DB" as port_db
+
+        NGINX_C - port80_nginx 
+        ADONIS_JS -- port_adonis
+        DB -- port_db
+
+        ADONIS_JS -  kafka
+        kafka - SERVICE_PYTHON
+
+        port_adonis .. port80_nginx : /api
+        port_db -- ADONIS_JS 
+
+    }
+    interface "80" as  port80_vps
+    port80_nginx .. port80_vps 
+}
+
+component BROWSER {
+
+    interface "80" as port80_browser
+    port80_browser . port80_vps
+}
+
+
+
+@enduml
