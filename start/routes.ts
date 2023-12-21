@@ -19,7 +19,11 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import KafkaController from 'App/Controllers/Http/KafkaController';
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
+
+
+Route.post('/envoyer-message', 'KafkaController.envoyerMessage');

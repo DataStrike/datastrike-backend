@@ -1,5 +1,14 @@
 {
   "commands": {
+    "send:message": {
+      "settings": {},
+      "commandPath": "./commands/SendMessage",
+      "commandName": "send:message",
+      "description": "Envoyer un message via Kafka",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",
