@@ -26,4 +26,4 @@ Route.get('/', async () => {
 })
 
 
-Route.post('/envoyer-message', 'KafkaController.envoyerMessage');
+Route.post('/envoyer-message', 'KafkaController.sendMessage');

@@ -19,7 +19,6 @@ class KafkaService {
   private initConsumer() {
     this.consumer.on('message', function (message) {
       console.log('Message reçu:', message.value)
-      // Traitez ici la réception des messages Kafka
     })
 
     this.consumer.on('error', function (err) {
@@ -27,8 +26,13 @@ class KafkaService {
     })
   }
 
-  public sendMessage(message: string) {
-    const kafkaMessage = { topic: 'test', messages: [message] }
+  public sendMessage(message: string, topic: string) {
+
+    if ( message.constructor == Object) {
+      message = JSON.stringify(message)
+    }
+
+    const kafkaMessage = { topic: topic, messages: [message] }
     this.producer.send([kafkaMessage], (err, data) => {
       if (err) {
         console.error("Erreur lors de l'envoi du message:", err)
