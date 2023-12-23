@@ -23,7 +23,15 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.get('/', async () => {
   return { hello: 'world' }
 })
-Route.get('/google/redirect', "UsersController.redirect")
-Route.get('/google/callback', "UsersController.handleCallback")
 
-Route.post('/envoyer-message', 'KafkaController.sendMessage');
+Route.group(() => {
+  Route.get('/:provider/redirect', 'UsersController.redirect')
+  Route.get('/:provider/callback', 'UsersController.handleCallback')
+})
+
+Route.group(() => {
+  Route.get('/me', 'UsersController.me')
+  Route.get('/logout', 'UsersController.logout')
+}).middleware('auth')
+
+Route.post('/envoyer-message', 'KafkaController.sendMessage')
