@@ -4,58 +4,85 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 
 export default class UsersController {
+  public async redirect({ ally, request }: HttpContextContract) {
+    const provider = request.param('provider')
 
-  public async redirect({ ally }: HttpContextContract) {
-    return ally.use('google').redirect()
+    // Add access-control-allow-origin header
+    request.header('Access-Control-Allow-Origin', '*')
+    if (provider === 'discord') {
+      return ally.use(provider).redirect((request) => {
+        request.scopes(['identify', 'guilds', 'email'])
+      })
+    }
+
+    return ally.use(provider).redirect()
   }
 
-  public async handleCallback({ ally, auth, response }: HttpContextContract) {
-    const google = ally.use('google')
+  public async handleCallback({ ally, auth, request, response }: HttpContextContract) {
+    try {
+      const provider = request.param('provider')
+      const providerUser = ally.use(provider)
 
-    /**
-     * User has explicitly denied the login request
-     */
-    if (google.accessDenied()) {
-      return 'Access was denied'
+      /**
+       * User has explicitly denied the login request
+       */
+      if (providerUser.accessDenied()) {
+        return 'Access was denied'
+      }
+
+      /**
+       * Unable to verify the CSRF state
+       */
+      if (providerUser.stateMisMatch()) {
+        return 'Request expired. Retry again'
+      }
+
+      /**
+       * There was an unknown error during the redirect
+       */
+      if (providerUser.hasError()) {
+        return providerUser.getError()
+      }
+
+      /**
+       * Finally, access the user
+       */
+      const userFromProvider = await providerUser.user()
+
+      /**
+       * Find the user by email or create
+       * a new one
+       */
+      const user = await User.findBy('email', userFromProvider.email)
+
+      if (!user) {
+        const newUser = new User()
+        await newUser
+          .fill({
+            name: userFromProvider.name,
+            email: userFromProvider.email,
+            rememberMeToken: userFromProvider.token.token,
+          })
+          .save()
+
+        await auth.use('web').login(newUser)
+        return response.json({
+          user: newUser,
+          token: userFromProvider.token.token,
+        })
+      } else {
+        // Refresh the token
+        user.rememberMeToken = userFromProvider.token.token
+        await user.save()
+
+        await auth.use('web').login(user)
+        return response.json({
+          user: user,
+          token: userFromProvider.token.token,
+        })
+      }
+    } catch (error) {
+      console.log(error)
     }
-
-    /**
-     * Unable to verify the CSRF state
-     */
-    if (google.stateMisMatch()) {
-      return 'Request expired. Retry again'
-    }
-
-    /**
-     * There was an unknown error during the redirect
-     */
-    if (google.hasError()) {
-      return google.getError()
-    }
-
-    /**
-     * Finally, access the user
-     */
-    const googleUser = await google.user()
-
-    /**
-     * Find the user by email or create
-     * a new one
-     */
-    const user = await User.firstOrCreate({
-      email: googleUser.email as string,
-    }, {
-      email: googleUser.email as string,
-      rememberMeToken: googleUser.token.token,
-      name: googleUser.name,
-    })
-
-    /**
-     * Login user using web guard
-     */
-    await auth.use('web').login(user)
-
-    // Redirect to home page
-    response.redirect('/')
   }
 }
