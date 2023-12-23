@@ -32,7 +32,7 @@
       "@adonisjs/auth",
       "@adonisjs/lucid",
       "@adonisjs/ally",
-      "@adonisjs/session"
+      "@adonisjs/session",
     ]
   }
 }
