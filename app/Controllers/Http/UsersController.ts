@@ -9,7 +9,7 @@ export default class UsersController {
     return ally.use('google').redirect()
   }
 
-  public async handleCallback({ ally, auth }: HttpContextContract) {
+  public async handleCallback({ ally, auth, response }: HttpContextContract) {
     const google = ally.use('google')
 
     /**
@@ -54,5 +54,8 @@ export default class UsersController {
      * Login user using web guard
      */
     await auth.use('web').login(user)
+
+    // Redirect to home page
+    response.redirect('/')
   }
 }
