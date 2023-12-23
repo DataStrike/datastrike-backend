@@ -19,11 +19,11 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import KafkaController from 'App/Controllers/Http/KafkaController';
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
-
+Route.get('/google/redirect', "UsersController.redirect")
+Route.get('/google/callback', "UsersController.handleCallback")
 
 Route.post('/envoyer-message', 'KafkaController.sendMessage');
