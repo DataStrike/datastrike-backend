@@ -20,65 +20,49 @@ export default class UsersController {
 
   public async handleCallback({ ally, auth, request, response }: HttpContextContract) {
     try {
+      // Get provider from request params
       const provider = request.param('provider')
       const providerUser = ally.use(provider)
 
-      /**
-       * User has explicitly denied the login request
-       */
-      if (providerUser.accessDenied()) {
-        return 'Access was denied'
-      }
+      // Get access token from headers for the user
+      const accessToken = request
+        .header('Authorization')!
+        // Remove Bearer from the token
+        .replace('Bearer ', '')
 
-      /**
-       * Unable to verify the CSRF state
-       */
-      if (providerUser.stateMisMatch()) {
-        return 'Request expired. Retry again'
-      }
-
-      /**
-       * There was an unknown error during the redirect
-       */
-      if (providerUser.hasError()) {
-        return providerUser.getError()
-      }
-
-      /**
-       * Finally, access the user
-       */
-      const userFromProvider = await providerUser.user()
+      // Get the user details from the provider
+      const userFromToken = await providerUser.userFromToken(accessToken)
 
       /**
        * Find the user by email or create
        * a new one
        */
-      const user = await User.findBy('email', userFromProvider.email)
+      const user = await User.findBy('email', userFromToken.email)
 
       if (!user) {
         const newUser = new User()
         await newUser
           .fill({
-            name: userFromProvider.name,
-            email: userFromProvider.email,
-            rememberMeToken: userFromProvider.token.token,
+            name: userFromToken.name,
+            email: userFromToken.email,
+            rememberMeToken: userFromToken.token.token,
           })
           .save()
 
         await auth.use('web').login(newUser)
         return response.json({
           user: newUser,
-          token: userFromProvider.token.token,
+          token: userFromToken.token.token,
         })
       } else {
         // Refresh the token
-        user.rememberMeToken = userFromProvider.token.token
+        user.rememberMeToken = userFromToken.token.token
         await user.save()
 
         await auth.use('web').login(user)
         return response.json({
           user: user,
-          token: userFromProvider.token.token,
+          token: userFromToken.token.token,
         })
       }
     } catch (error) {
