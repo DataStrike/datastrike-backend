@@ -45,7 +45,6 @@ export default class UsersController {
           .fill({
             name: userFromToken.name,
             email: userFromToken.email,
-            rememberMeToken: userFromToken.token.token,
           })
           .save()
 
@@ -56,7 +55,6 @@ export default class UsersController {
         })
       } else {
         // Refresh the token
-        user.rememberMeToken = userFromToken.token.token
         await user.save()
 
         await auth.use('web').login(user)
