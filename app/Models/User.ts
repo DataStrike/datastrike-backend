@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
-
+import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import UserProviders from 'App/Models/UserProviders'
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -12,9 +12,6 @@ export default class User extends BaseModel {
   public name: string
 
   @column()
-  public provider: string
-
-  @column()
   public accessToken: string
 
   @column()
@@ -22,6 +19,9 @@ export default class User extends BaseModel {
 
   @column()
   public avatarUrl: string
+
+  @hasMany(() => UserProviders)
+  public providers: HasMany<typeof UserProviders>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
