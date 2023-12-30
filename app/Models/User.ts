@@ -11,6 +11,18 @@ export default class User extends BaseModel {
   @column()
   public name: string
 
+  @column()
+  public provider: string
+
+  @column()
+  public accessToken: string
+
+  @column()
+  public refreshToken: string
+
+  @column()
+  public avatarUrl: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
