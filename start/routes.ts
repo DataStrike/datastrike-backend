@@ -19,11 +19,19 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import KafkaController from 'App/Controllers/Http/KafkaController';
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
+Route.group(() => {
+  Route.get('/:provider/redirect', 'UsersController.redirect')
+  Route.get('/:provider/callback', 'UsersController.handleCallback')
+})
 
-Route.post('/envoyer-message', 'KafkaController.sendMessage');
+Route.group(() => {
+  Route.get('/me', 'UsersController.me')
+  Route.get('/logout', 'UsersController.logout')
+}).middleware('auth')
+
+Route.post('/envoyer-message', 'KafkaController.sendMessage')
