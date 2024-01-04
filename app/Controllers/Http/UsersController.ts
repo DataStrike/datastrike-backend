@@ -37,6 +37,7 @@ export default class UsersController {
 
           // Update the user avatar
           existingUser.avatarUrl = userData.avatarUrl
+          existingUser.name = userData.name
           await existingUser.save()
 
           await auth.login(existingUser)
@@ -59,10 +60,11 @@ export default class UsersController {
       } else {
         const user = await userProvider.related('userId').query().firstOrFail()
         user.avatarUrl = userData.avatarUrl
+        user.name = userData.name
         await user.save()
         await auth.login(user)
       }
-      response.redirect('http://localhost:5173/dashboard')
+      response.redirect('http://localhost:5173/tracker')
     } catch (error) {
       console.log(error)
     }
