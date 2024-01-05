@@ -1,10 +1,12 @@
 import { DateTime } from 'luxon'
 import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import Player from 'App/Models/OverwatchObject/Player'
+import Round from 'App/Models/OverwatchObject/Round'
+
 export default class Team extends BaseModel {
 
   @column({ isPrimary: true })
-  public id: number
+  public TeamId: number
 
   @column()
   public name: string
@@ -17,4 +19,8 @@ export default class Team extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @column()
+  @belongsTo(() => Round)
+  public RoundId: BelongsTo<typeof Round>
 }

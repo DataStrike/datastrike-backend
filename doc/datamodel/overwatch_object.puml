@@ -1,0 +1,72 @@
+@startuml
+!theme toy
+
+
+entity User {
+  * user_id
+
+}
+
+entity Enrollment {
+  * enrollment_id
+  * user_id
+  * team_id
+}
+
+entity TeamWeb {
+  * teamweb_id
+  * user_id
+}
+
+entity Match {
+  * match_id
+  * date
+  * map_name
+  * map_type
+  * team1_name
+  * team2_name
+  * team1_score
+  * team2_score
+}
+
+entity Round {
+  * round_id
+  * start_time
+  * objective_captured
+  * objective_progress
+}
+
+entity Team {
+  * team_id
+  * name
+}
+
+entity Player {
+  * player_id
+  * name
+}
+
+entity Character {
+  * character_id
+  * name
+  * stats
+  * played_time
+  * kills
+  * deaths
+  * ultimate_charged
+  * ultimate_use
+
+}
+
+TeamWeb }|--o| Enrollment
+Enrollment |o--|{ User
+
+
+Match ||-|{ Round
+Round ||-|{ Team
+Team  ||-o{ Player
+Player ||-o{ Character
+
+TeamWeb ||-|{ Match
+
+@enduml

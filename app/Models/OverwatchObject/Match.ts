@@ -4,7 +4,7 @@ import Round from 'App/Models/OverwatchObject/Round'
 export default class Match extends BaseModel {
 
   @column({ isPrimary: true })
-  public id: number
+  public MatchId: number
 
   @column.date()
   public date: DateTime

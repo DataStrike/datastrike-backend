@@ -1,35 +1,40 @@
 import { DateTime } from 'luxon'
 import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
-import Character from 'App/Models/OverwatchObject/Player'
-export default class Player extends BaseModel {
+import Player from 'App/Models/OverwatchObject/Player'
+
+export default class Character extends BaseModel {
 
   @column({ isPrimary: true })
-  public id: number
+  public CharacterId: number
 
   @column()
   public name: string
 
   @column()
-  public stats: dict<string>
+  public stats: JSON
 
   @column()
-  public played_time: list<string>
+  public played_time: JSON
 
   @column()
-  public kills: list<string>
+  public kills: JSON
 
   @column()
-  public deads: list<string>
+  public deaths: JSON
 
   @column()
-  public ultimate_charged: list<string>
+  public ultimate_charged: JSON
 
   @column()
-  public ultimate_earned: list<string>
+  public ultimate_use: JSON
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @column()
+  @belongsTo(() => Player)
+  public PlayerId: BelongsTo<typeof Player>
 }
