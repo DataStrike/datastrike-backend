@@ -24,6 +24,9 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
+
+Route.post('/send', 'KafkaController.sendMessage')
+
 Route.group(() => {
   Route.get('/:provider/redirect', 'UsersController.redirect')
   Route.get('/:provider/callback', 'UsersController.handleCallback')
@@ -34,4 +37,4 @@ Route.group(() => {
   Route.get('/logout', 'UsersController.logout')
 }).middleware('auth')
 
-Route.post('/envoyer-message', 'KafkaController.sendMessage')
+

@@ -1,4 +1,4 @@
-import { KafkaClient, Producer, Consumer } from 'kafka-node'
+import { KafkaClient, Producer, Consumer, TopicsNotExistError } from 'kafka-node'
 
 class KafkaService {
   private client: KafkaClient
@@ -9,11 +9,12 @@ class KafkaService {
     const kafkaHost = 'localhost:29092'
     this.client = new KafkaClient({ kafkaHost })
     this.producer = new Producer(this.client)
-    this.consumer = new Consumer(this.client, [{ topic: 'test' }], {
+    this.consumer = new Consumer(this.client, [{ topic: 'analyse_report' }], {
       groupId: 'votre_groupe',
     })
 
     this.initConsumer()
+    this.createTopicIfNotExists('analyse_report');
   }
 
   private initConsumer() {
@@ -24,6 +25,28 @@ class KafkaService {
     this.consumer.on('error', function (err) {
       console.error('Erreur de consommateur Kafka:', err)
     })
+  }
+
+
+
+  private createTopicIfNotExists(topicName: string) {
+    const topicsToCreate = [{
+      topic: topicName,
+      partitions: 1, // Nombre de partitions
+      replicationFactor: 1 // Facteur de réplication
+    }];
+
+    this.client.createTopics(topicsToCreate, (error, result) => {
+      if (error) {
+        if (error instanceof TopicsNotExistError) {
+          console.log(`Le topic "${topicName}" existe déjà.`);
+        } else {
+          console.error(`Erreur lors de la création du topic "${topicName}":`, error);
+        }
+      } else {
+        console.log(`Le topic "${topicName}" a été créé avec succès.`, result);
+      }
+    });
   }
 
   public sendMessage(message: string, topic: string) {
