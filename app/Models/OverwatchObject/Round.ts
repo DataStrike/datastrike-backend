@@ -10,10 +10,10 @@ export default class Round extends BaseModel {
   public start_time: string
 
   @column()
-  public objective_captured: list<string>
+  public objective_captured: JSON
 
   @column()
-  public objective_progress: list<string>
+  public objective_progress: JSON
 
   @hasMany(() => Team)
   public teams: HasMany<typeof Team>

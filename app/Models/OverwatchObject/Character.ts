@@ -10,22 +10,22 @@ export default class Player extends BaseModel {
   public name: string
 
   @column()
-  public stats: dict<string>
+  public stats: JSON
 
   @column()
-  public played_time: list<string>
+  public played_time: JSON
 
   @column()
-  public kills: list<string>
+  public kills: JSON
 
   @column()
-  public deads: list<string>
+  public deaths: JSON
 
   @column()
-  public ultimate_charged: list<string>
+  public ultimate_charged: JSON
 
   @column()
-  public ultimate_earned: list<string>
+  public ultimate_use: JSON
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
