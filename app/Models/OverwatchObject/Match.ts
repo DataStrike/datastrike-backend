@@ -1,10 +1,10 @@
 import { DateTime } from 'luxon'
-import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, BaseModel, hasMany, HasMany,  BelongsTo, belongsTo } from '@ioc:Adonis/Lucid/Orm'
 import Round from 'App/Models/OverwatchObject/Round'
 export default class Match extends BaseModel {
 
   @column({ isPrimary: true })
-  public MatchId: number
+  public id: number
 
   @column.date()
   public date: DateTime
