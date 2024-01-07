@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
-import { column, BaseModel, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, BaseModel,  BelongsTo, belongsTo } from '@ioc:Adonis/Lucid/Orm'
 import Player from 'App/Models/OverwatchObject/Player'
 
 export default class Character extends BaseModel {
 
   @column({ isPrimary: true })
-  public CharacterId: number
+  public id: number
 
   @column()
   public name: string
@@ -36,5 +36,5 @@ export default class Character extends BaseModel {
 
   @column()
   @belongsTo(() => Player)
-  public PlayerId: BelongsTo<typeof Player>
+  public playerId: BelongsTo<typeof Player>
 }

@@ -1,4 +1,6 @@
 import { KafkaClient, Producer, Consumer, TopicsNotExistError } from 'kafka-node'
+import OverwatchAnalyse from './OverwatchAnalyse'
+
 
 class KafkaService {
   private client: KafkaClient
@@ -9,49 +11,53 @@ class KafkaService {
     const kafkaHost = 'localhost:29092'
     this.client = new KafkaClient({ kafkaHost })
     this.producer = new Producer(this.client)
-    this.consumer = new Consumer(this.client, [{ topic: 'analyse_report' }], {
-      groupId: 'votre_groupe',
+    this.consumer = new Consumer(this.client, [{ topic: 'analyse.report' }], {
+      groupId: 'datastrike',
     })
 
     this.initConsumer()
-    this.createTopicIfNotExists('analyse_report');
+    this.createTopicIfNotExists('analyse.report')
   }
 
   private initConsumer() {
-    this.consumer.on('message', function (message) {
-      console.log('Message reçu:', message.value)
-    })
+    this.consumer.on('message', (message) => {
+      // Vérifie si le message appartient au topic 'analyse_report'
+      if (message.topic === 'analyse.report') {
+        OverwatchAnalyse.processAndStoreDataFromJSON(message.value)
+      }
+      // Autres logiques pour d'autres topics si nécessaire
+    });
 
-    this.consumer.on('error', function (err) {
-      console.error('Erreur de consommateur Kafka:', err)
-    })
+    this.consumer.on('error', (err) => {
+      console.error('Erreur de consommateur Kafka:', err);
+    });
   }
 
 
-
   private createTopicIfNotExists(topicName: string) {
-    const topicsToCreate = [{
-      topic: topicName,
-      partitions: 1, // Nombre de partitions
-      replicationFactor: 1 // Facteur de réplication
-    }];
+    const topicsToCreate = [
+      {
+        topic: topicName,
+        partitions: 1, // Nombre de partitions
+        replicationFactor: 1, // Facteur de réplication
+      },
+    ]
 
     this.client.createTopics(topicsToCreate, (error, result) => {
       if (error) {
         if (error instanceof TopicsNotExistError) {
-          console.log(`Le topic "${topicName}" existe déjà.`);
+          console.log(`Le topic "${topicName}" existe déjà.`)
         } else {
-          console.error(`Erreur lors de la création du topic "${topicName}":`, error);
+          console.error(`Erreur lors de la création du topic "${topicName}":`, error)
         }
       } else {
-        console.log(`Le topic "${topicName}" a été créé avec succès.`, result);
+        console.log(`Le topic "${topicName}" a été créé avec succès.`, result)
       }
-    });
+    })
   }
 
   public sendMessage(message: string, topic: string) {
-
-    if ( message.constructor == Object) {
+    if (message.constructor == Object) {
       message = JSON.stringify(message)
     }
 
