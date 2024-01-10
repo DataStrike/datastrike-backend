@@ -1,5 +1,5 @@
 import { KafkaClient, Producer, Consumer, TopicsNotExistError } from 'kafka-node'
-import OverwatchAnalyse from './OverwatchAnalyse'
+import OverwatchAnalyse from './OverwatchAnalyseService'
 
 
 class KafkaService {
