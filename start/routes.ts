@@ -37,4 +37,4 @@ Route.group(() => {
   Route.get('/logout', 'UsersController.logout')
 }).middleware('auth')
 
-
+Route.post('/new_overwatch_analysis', 'OverwatchAnalyseController.newOverwatchAnalyse')
