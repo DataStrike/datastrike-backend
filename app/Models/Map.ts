@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
 import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
 
-export default class MapOverwatch extends BaseModel {
-
+export default class Map extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
