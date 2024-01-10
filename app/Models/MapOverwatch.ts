@@ -1,13 +1,13 @@
 import { DateTime } from 'luxon'
-import { column, BaseModel, hasMany, HasMany,  BelongsTo, belongsTo } from '@ioc:Adonis/Lucid/Orm'
-import Round from 'App/Models/OverwatchObject/Round'
-export default class Match extends BaseModel {
+import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+
+export default class MapOverwatch extends BaseModel {
 
   @column({ isPrimary: true })
   public id: number
 
-  @column.date()
-  public date: DateTime
+  @column()
+  public date: string
 
   @column()
   public map_name: string
@@ -27,8 +27,8 @@ export default class Match extends BaseModel {
   @column()
   public team2_score: number
 
-  @hasMany(() => Round)
-  public rounds: HasMany<typeof Round>
+  @column()
+  public data: JSON
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
