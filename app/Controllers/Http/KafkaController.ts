@@ -6,7 +6,7 @@ export default class KafkaController {
     const { message } = request.only(['message'])
     const { topic } = request.only(['topic'])
 
-    console.log(message)
+    // console.log(message)
     const kafkaService = new KafkaService()
     kafkaService.sendMessage(message, topic)
 

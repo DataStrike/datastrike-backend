@@ -20,6 +20,7 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+
 Route.get('/', async () => {
   return { hello: 'world' }
 })
@@ -38,3 +39,4 @@ Route.group(() => {
 }).middleware('auth')
 
 Route.post('/new_overwatch_analysis', 'OverwatchAnalyseController.newOverwatchAnalyse')
+Route.get("/maps", "MapsController.index")

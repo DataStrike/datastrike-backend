@@ -1,4 +1,5 @@
 import Map from 'App/Models/Map'
+import Ws from 'App/Services/Ws'
 
 class OverwatchAnalyse {
 
@@ -58,6 +59,9 @@ class OverwatchAnalyse {
         mapDb.data = map
         await mapDb.save()
       }
+      
+      Ws.io.emit('analysisData', "finish")
+      // console.info('Map traitée avec succès')
     }
 
   }
