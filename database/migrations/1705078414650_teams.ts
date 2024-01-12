@@ -1,21 +1,26 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'teams'
+  protected teams_name = 'teams'
+  protected team_user_name = 'team_user'
 
-  public async up () {
-    this.schema.createTable(this.tableName, (table) => {
+  public async up() {
+    this.schema.createTable(this.teams_name, (table) => {
       table.increments('id')
+      table.string('name').notNullable()
+      table.string('code').notNullable()
+    })
 
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
-      table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
+    this.schema.createTable(this.team_user_name, (table) => {
+      table.increments('id').primary()
+      table.integer('user_id').unsigned().references('users.id')
+      table.integer('team_id').unsigned().references('teams.id')
+      table.unique(['user_id', 'team_id'])
     })
   }
 
-  public async down () {
-    this.schema.dropTable(this.tableName)
+  public async down() {
+    this.schema.dropTable(this.teams_name)
+    this.schema.dropTable(this.team_user_name)
   }
 }
