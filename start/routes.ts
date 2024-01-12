@@ -24,7 +24,6 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-
 Route.post('/send', 'KafkaController.sendMessage')
 
 Route.group(() => {
@@ -35,6 +34,8 @@ Route.group(() => {
 Route.group(() => {
   Route.get('/me', 'UsersController.me')
   Route.get('/logout', 'UsersController.logout')
+  Route.post('/teams', 'TeamsController.addTeam')
+  Route.post('/teams/:code', 'TeamsController.joinTeam')
+  Route.delete('/teams/:code', 'TeamsController.leaveTeam')
+  Route.get('/teams', 'TeamsController.getTeams')
 }).middleware('auth')
-
-
