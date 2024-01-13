@@ -38,4 +38,6 @@ Route.group(() => {
   Route.post('/teams/:code', 'TeamsController.joinTeam')
   Route.delete('/teams/:code', 'TeamsController.leaveTeam')
   Route.get('/teams', 'TeamsController.getTeams')
+  Route.get('/tracker/:teamName', 'TrackerController.getTrackerResults')
+  Route.post('/tracker/:teamName', 'TrackerController.addTrackerResults')
 }).middleware('auth')
