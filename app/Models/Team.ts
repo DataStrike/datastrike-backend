@@ -1,5 +1,6 @@
 import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
+import TrackerResult from 'App/Models/TrackerResult'
 
 export default class Team extends BaseModel {
   @column({ isPrimary: true })
@@ -13,4 +14,7 @@ export default class Team extends BaseModel {
 
   @hasMany(() => User)
   public users: HasMany<typeof User>
+
+  @hasMany(() => TrackerResult)
+  public trackerResults: HasMany<typeof TrackerResult>
 }
