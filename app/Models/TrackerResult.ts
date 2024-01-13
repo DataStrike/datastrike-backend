@@ -25,6 +25,9 @@ export default class TrackerResult extends BaseModel {
   @column()
   public team2_score: number
 
+  @column()
+  public info: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
