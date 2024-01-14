@@ -56,7 +56,7 @@ class KafkaService {
     })
   }
 
-  public sendMessage(message: string, topic: string) {
+  public sendMessage(message: string | Object, topic: string) {
     if (message.constructor == Object) {
       message = JSON.stringify(message)
     }

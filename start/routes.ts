@@ -20,6 +20,7 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+
 Route.get('/', async () => {
   return { hello: 'world' }
 })
@@ -41,3 +42,7 @@ Route.group(() => {
   Route.get('/tracker/:teamId', 'TrackerController.getTrackerResults')
   Route.post('/tracker/:teamId', 'TrackerController.addTrackerResults')
 }).middleware('auth')
+
+Route.post('/new_overwatch_analysis', 'OverwatchAnalyseController.newOverwatchAnalyse')
+Route.get("/maps", "MapsController.index")
+
