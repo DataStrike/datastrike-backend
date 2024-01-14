@@ -20,7 +20,12 @@ export default class TrackerController {
         mapName: result.mapName,
         usScore: result.team1_score,
         themScore: result.team2_score,
-        result: result.team1_score > result.team2_score ? 'W' : 'L',
+        result:
+          result.team1_score > result.team2_score
+            ? 'W'
+            : result.team1_score < result.team2_score
+              ? 'L'
+              : 'D',
         info: result.info,
       }
     })
