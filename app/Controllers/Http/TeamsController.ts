@@ -43,6 +43,7 @@ export default class TeamsController {
         const players = await TeamsService.getPlayers(team.id)
 
         return {
+          id: team.id,
           name: team.name,
           code: team.code,
           players: players.map((player) => {

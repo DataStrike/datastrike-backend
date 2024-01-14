@@ -2,19 +2,17 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class TrackerController {
   public async getTrackerResults({ request, auth }: HttpContextContract) {
-    const { teamName } = request.params()
+    const { teamId } = request.params()
     const user = auth.user!
     if (!user) {
       throw new Error('User not found')
     }
 
-    // Get all the lines in tracker where the team code matches
-    const teamId = await user.related('teams').query().where('name', teamName).firstOrFail()
+    const team = await user.related('teams').query().where('teams.id', teamId).firstOrFail()
 
     // Get the tracker
-    const tracker = await teamId.related('trackerResults').query()
+    const tracker = await team.related('trackerResults').query()
 
-    console.log(tracker)
     return tracker.map((result) => {
       return {
         opponentTeamName: result.opponentTeam,
@@ -23,26 +21,33 @@ export default class TrackerController {
         usScore: result.team1_score,
         themScore: result.team2_score,
         result: result.team1_score > result.team2_score ? 'W' : 'L',
+        info: result.info,
       }
     })
   }
 
-  public async addTrackerResults({ request, auth }: HttpContextContract) {
-    const { teamName } = request.params()
+  public async addTrackerResults({ auth, request, response }: HttpContextContract) {
+    const { teamId } = request.params()
     const user = auth.user!
     if (!user) {
       throw new Error('User not found')
     }
 
-    // Get the teamId from the teamName
-    const teamId = await user.related('teams').query().where('name', teamName).firstOrFail()
-
+    const team = await user.related('teams').query().where('teams.id', teamId).firstOrFail()
     // Add the new results (can be an array)
     const newResult = request.body()
-    await teamId.related('trackerResults').create(newResult)
 
-    return {
-      message: 'Results added',
+    for (const map of newResult.maps) {
+      await team.related('trackerResults').create({
+        opponentTeam: newResult.opponentTeam,
+        info: newResult.info,
+        date: newResult.date,
+        mapName: map.map_name,
+        team1_score: map.us_score,
+        team2_score: map.them_score,
+      })
     }
+
+    return response.ok({ message: 'Tracker results added' })
   }
 }
