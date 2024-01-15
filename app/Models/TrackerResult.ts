@@ -28,6 +28,12 @@ export default class TrackerResult extends BaseModel {
   @column()
   public info: string
 
+  @column()
+  public replay_code: string
+
+  @column()
+  public vod_link: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
