@@ -1,5 +1,4 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
 export default class TrackerController {
   public async getTrackerResults({ request, auth }: HttpContextContract) {
     const { teamId } = request.params()
@@ -20,6 +19,8 @@ export default class TrackerController {
         mapName: result.mapName,
         usScore: result.team1_score,
         themScore: result.team2_score,
+        replayCode: result.replay_code,
+        vodLink: result.vod_link,
         result:
           result.team1_score > result.team2_score
             ? 'W'
@@ -47,9 +48,11 @@ export default class TrackerController {
         opponentTeam: newResult.opponentTeam,
         info: newResult.info,
         date: newResult.date,
+        vod_link: newResult.vodLink,
         mapName: map.map_name,
         team1_score: map.us_score,
         team2_score: map.them_score,
+        replay_code: map.replay_code,
       })
     }
 
