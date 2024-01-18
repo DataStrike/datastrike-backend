@@ -1,15 +1,13 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import KafkaService from 'App/Services/KafkaService'
 import Env from '@ioc:Adonis/Core/Env'
+import kafkaService from 'App/Services/KafkaService'
 
 export default class OverwatchAnalyseController {
   public async newOverwatchAnalyse({ request, response }: HttpContextContract) {
     const teamId = request.input('teamId')
-    const kafkaService = new KafkaService()
 
     for (let i = 0; i < 10; i++) {
       const file = request.file('files[' + i + ']')
-
       if (!file && i == 0) {
         return response.status(400).send('Aucun fichier reçu')
       }
@@ -35,6 +33,7 @@ export default class OverwatchAnalyseController {
           fileName: file.clientName,
         }
         kafkaService.sendMessage(message, 'analyse')
+        console.log('Message envoyé')
       } catch (error) {
         console.error('Erreur lors de la sauvegarde du fichier :', error)
         return response.status(500).send('Erreur lors de la sauvegarde du fichier')
