@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { column, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import Team from 'App/Models/Team'
 
 export default class Map extends BaseModel {
   @column({ isPrimary: true })
@@ -28,6 +29,10 @@ export default class Map extends BaseModel {
 
   @column()
   public data: JSON
+
+  @column()
+  @belongsTo(() => Team)
+  public teamId: BelongsTo<typeof Team>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

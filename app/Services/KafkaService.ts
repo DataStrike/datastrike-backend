@@ -1,11 +1,11 @@
 import { KafkaClient, Producer, Consumer, TopicsNotExistError } from 'kafka-node'
 import OverwatchAnalyse from './OverwatchAnalyseService'
 
-
 class KafkaService {
   private client: KafkaClient
   private producer: Producer
   private consumer: Consumer
+  private static instance: KafkaService
 
   constructor() {
     const kafkaHost = 'localhost:29092'
@@ -19,6 +19,13 @@ class KafkaService {
     this.createTopicIfNotExists('analyse.report')
   }
 
+  public static getInstance(): KafkaService {
+    if (!KafkaService.instance) {
+      KafkaService.instance = new KafkaService()
+    }
+    return KafkaService.instance
+  }
+
   private initConsumer() {
     this.consumer.on('message', (message) => {
       // Vérifie si le message appartient au topic 'analyse_report'
@@ -26,13 +33,12 @@ class KafkaService {
         OverwatchAnalyse.processAndStoreDataFromJSON(message.value)
       }
       // Autres logiques pour d'autres topics si nécessaire
-    });
+    })
 
     this.consumer.on('error', (err) => {
-      console.error('Erreur de consommateur Kafka:', err);
-    });
+      console.error('Erreur de consommateur Kafka:', err)
+    })
   }
-
 
   private createTopicIfNotExists(topicName: string) {
     const topicsToCreate = [
@@ -72,4 +78,4 @@ class KafkaService {
   }
 }
 
-export default KafkaService
+export default KafkaService.getInstance()
