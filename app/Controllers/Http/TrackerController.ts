@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import TrackerResult from 'App/Models/TrackerResult'
 export default class TrackerController {
   public async getTrackerResults({ request, auth }: HttpContextContract) {
     const { teamId } = request.params()
@@ -14,6 +15,7 @@ export default class TrackerController {
 
     return tracker.map((result) => {
       return {
+        id: result.id,
         opponentTeamName: result.opponentTeam,
         date: result.date,
         mapName: result.mapName,
@@ -57,5 +59,18 @@ export default class TrackerController {
     }
 
     return response.ok({ message: 'Tracker results added' })
+  }
+
+  public async deleteTrackerResults({ auth, request, response }: HttpContextContract) {
+    const { trackerResultId } = request.params()
+    const user = auth.user!
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    const trackerResult = await TrackerResult.query().where('id', trackerResultId).firstOrFail()
+    await trackerResult.delete()
+
+    return response.ok({ message: 'Tracker result deleted' })
   }
 }
