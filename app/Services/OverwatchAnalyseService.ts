@@ -13,6 +13,7 @@ class OverwatchAnalyse {
         date: map.date,
         map_name: map.map_name,
         map_type: map.map_type,
+        team_id: map.team_id,
       }
 
       const mapDb = await Map.query().where(whereClause).first()

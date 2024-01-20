@@ -1,5 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import KafkaService from 'App/Services/KafkaService' // Importez votre service Kafka
+import KafkaService from 'App/Services/KafkaService'
 
 export default class KafkaController {
   public async sendMessage({ request, response }: HttpContextContract) {
@@ -7,7 +7,7 @@ export default class KafkaController {
     const { topic } = request.only(['topic'])
 
     // console.log(message)
-    const kafkaService = new KafkaService()
+    const kafkaService = KafkaService
     kafkaService.sendMessage(message, topic)
 
     return response.status(200).send('Message envoyé à Kafka')
