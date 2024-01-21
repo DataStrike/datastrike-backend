@@ -38,8 +38,12 @@ Route.group(() => {
   Route.post('/teams/:code', 'TeamsController.joinTeam')
   Route.delete('/teams/:code', 'TeamsController.leaveTeam')
   Route.get('/teams', 'TeamsController.getTeams')
-  Route.get('/tracker/:teamId', 'TrackerController.getTrackerResults')
-  Route.post('/tracker/:teamId', 'TrackerController.addTrackerResults')
-  Route.get('/maps/:teamId', 'MapsController.index')
-  Route.post('/maps/:teamId', 'OverwatchAnalyseController.newOverwatchAnalyse')
+
+  Route.get('/teams/:teamId/tracker', 'TrackerController.getTrackerResults')
+  Route.post('/teams/:teamId/tracker', 'TrackerController.addTrackerResults')
+  Route.delete('/tracker/:trackerResultId', 'TrackerController.deleteTrackerResults')
+
+  Route.get('/teams/:teamId/maps', 'MapsController.index')
+  Route.get('/maps/:mapId', 'MapsController.getMap')
+  Route.post('/teams/:teamId/maps', 'OverwatchAnalyseController.newOverwatchAnalyse')
 }).middleware('auth')
