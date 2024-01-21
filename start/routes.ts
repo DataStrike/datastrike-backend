@@ -44,5 +44,6 @@ Route.group(() => {
   Route.delete('/tracker/:trackerResultId', 'TrackerController.deleteTrackerResults')
 
   Route.get('/teams/:teamId/maps', 'MapsController.index')
+  Route.get('/maps/:mapId', 'MapsController.getMap')
   Route.post('/teams/:teamId/maps', 'OverwatchAnalyseController.newOverwatchAnalyse')
 }).middleware('auth')
