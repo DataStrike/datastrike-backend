@@ -16,10 +16,11 @@ class Ws {
       this.booted = true
       this.io = new Server(AdonisServer.instance!, {
         cors: {
-          origin: '*'
-        }
+          origin: ['http://localhost:5173', 'http://datastrike.cloud', "https://datastrike.cloud"],
+        },
+        path: '/ws',
       })
     }
   }
 
-export default new Ws()
+export default new Ws() 
