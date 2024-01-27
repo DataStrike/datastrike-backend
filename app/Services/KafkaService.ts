@@ -1,5 +1,6 @@
 import { KafkaClient, Producer, Consumer, TopicsNotExistError } from 'kafka-node'
 import OverwatchAnalyse from './OverwatchAnalyseService'
+import Env from '@ioc:Adonis/Core/Env'
 
 class KafkaService {
   private client: KafkaClient
@@ -8,7 +9,7 @@ class KafkaService {
   private static instance: KafkaService
 
   constructor() {
-    const kafkaHost = 'localhost:29092'
+    const kafkaHost = Env.get('KAFKA_URL') || 'localhost:29092'
     this.client = new KafkaClient({ kafkaHost })
     this.producer = new Producer(this.client)
     this.consumer = new Consumer(this.client, [{ topic: 'analyse.report' }], {
