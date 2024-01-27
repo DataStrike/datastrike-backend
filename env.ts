@@ -27,4 +27,6 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
   UPLOAD_MAP_PATH: Env.schema.string(),
+  BACK_URL: Env.schema.string(),
+  FRONT_URL: Env.schema.string(),
 })

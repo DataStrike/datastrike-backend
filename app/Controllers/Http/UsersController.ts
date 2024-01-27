@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import UserProviders from 'App/Models/UserProviders'
+import Env from '@ioc:Adonis/Core/Env'
 
 export default class UsersController {
   public async redirect({ ally, params }: HttpContextContract) {
@@ -64,7 +65,7 @@ export default class UsersController {
         await user.save()
         await auth.login(user)
       }
-      response.redirect('http://localhost:5173/tracker')
+      response.redirect(`${Env.get('FRONT_URL')}/tracker`)
     } catch (error) {
       console.log(error)
     }
