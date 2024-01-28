@@ -47,3 +47,9 @@ Route.group(() => {
   Route.get('/maps/:mapId', 'MapsController.getMap')
   Route.post('/teams/:teamId/maps', 'OverwatchAnalyseController.newOverwatchAnalyse')
 }).middleware('auth')
+
+Route.group(() => {
+  Route.get('/stats', 'AdminController.getStats')
+})
+  .prefix('/admin')
+  .middleware('auth')
