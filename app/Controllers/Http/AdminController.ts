@@ -3,6 +3,11 @@ import Team from 'App/Models/Team'
 import User from 'App/Models/User'
 import Map from 'App/Models/Map'
 import TrackerResult from 'App/Models/TrackerResult'
+import AdminStats from 'App/Models/Exposition/Admin/AdminStats'
+import AdminTeam from 'App/Models/Exposition/Admin/AdminTeam'
+import AdminMap from 'App/Models/Exposition/Admin/AdminMap'
+import AdminTrackerResult from 'App/Models/Exposition/Admin/AdminTrackerResult'
+import AdminUser from 'App/Models/Exposition/Admin/AdminUser'
 
 export default class AdminController {
   public async getStats({ auth }: HttpContextContract) {
@@ -20,10 +25,15 @@ export default class AdminController {
     const trackerResults = await TrackerResult.all()
 
     return {
-      teams,
-      users,
-      maps,
-      trackerResults,
+      stats: new AdminStats(teams.length, users.length, maps.length, trackerResults.length),
+      data: {
+        teams: teams.map((team) => new AdminTeam(team)),
+        users: users.map((user) => new AdminUser(user)),
+        maps: maps.map((map) => new AdminMap(map)),
+        trackerResults: trackerResults.map(
+          (trackerResult) => new AdminTrackerResult(trackerResult)
+        ),
+      },
     }
   }
 }
