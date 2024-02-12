@@ -22,16 +22,11 @@ export default class TrackerController {
         mapName: result.mapName,
         usScore: result.team1_score,
         themScore: result.team2_score,
-        usPayload: result.team1_payload,
-        themPayload: result.team2_payload,
+        usInfo: result.team1_info,
+        themInfo: result.team2_info,
         replayCode: result.replay_code,
         vodLink: result.vod_link,
-        result: determineResult(
-          result.team1_score,
-          result.team2_score,
-          result.team1_payload,
-          result.team2_payload
-        ),
+        result: determineResult(result.team1_score, result.team2_score),
         info: result.info,
       }
     })
@@ -56,8 +51,8 @@ export default class TrackerController {
         mapName: map.map_name,
         team1_score: map.us_score,
         team2_score: map.them_score,
-        team1_payload: map.us_payload,
-        team2_payload: map.them_payload,
+        team1_info: map.us_info,
+        team2_info: map.them_info,
         replay_code: map.replay_code,
       })
     }

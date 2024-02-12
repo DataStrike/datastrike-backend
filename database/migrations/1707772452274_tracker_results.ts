@@ -5,12 +5,14 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.integer('team1_payload').nullable()
-      table.integer('team2_payload').nullable()
+      table.string('team1_info').nullable()
+      table.string('team2_info').nullable()
     })
   }
 
   public async down() {
-    this.schema.dropTable(this.tableName)
+    this.schema.alterTable(this.tableName, (table) => {
+      table.dropColumns('team1_info', 'team2_info')
+    })
   }
 }
