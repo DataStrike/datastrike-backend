@@ -23,6 +23,12 @@ export default class TrackerResult extends BaseModel {
   public team1_score: number
 
   @column()
+  public team1_payload: number
+
+  @column()
+  public team2_payload: number
+
+  @column()
   public team2_score: number
 
   @column()
