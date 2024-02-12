@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import TrackerResult from 'App/Models/TrackerResult'
+import { determineResult } from '../../../utils/tracker-results'
 export default class TrackerController {
   public async getTrackerResults({ request, auth }: HttpContextContract) {
     const { teamId } = request.params()
@@ -21,14 +22,16 @@ export default class TrackerController {
         mapName: result.mapName,
         usScore: result.team1_score,
         themScore: result.team2_score,
+        usPayload: result.team1_payload,
+        themPayload: result.team2_payload,
         replayCode: result.replay_code,
         vodLink: result.vod_link,
-        result:
-          result.team1_score > result.team2_score
-            ? 'W'
-            : result.team1_score < result.team2_score
-              ? 'L'
-              : 'D',
+        result: determineResult(
+          result.team1_score,
+          result.team2_score,
+          result.team1_payload,
+          result.team2_payload
+        ),
         info: result.info,
       }
     })
@@ -44,7 +47,6 @@ export default class TrackerController {
     const team = await user.related('teams').query().where('teams.id', teamId).firstOrFail()
     // Add the new results (can be an array)
     const newResult = request.body()
-
     for (const map of newResult.maps) {
       await team.related('trackerResults').create({
         opponentTeam: newResult.opponentTeam,
@@ -54,6 +56,8 @@ export default class TrackerController {
         mapName: map.map_name,
         team1_score: map.us_score,
         team2_score: map.them_score,
+        team1_payload: map.us_payload,
+        team2_payload: map.them_payload,
         replay_code: map.replay_code,
       })
     }
