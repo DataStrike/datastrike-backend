@@ -13,6 +13,10 @@ export default class UsersController {
 
   public async handleCallback({ ally, auth, params, response }: HttpContextContract) {
     try {
+      if (ally.use(params.provider).accessDenied()) {
+        return response.redirect(`${Env.get('FRONT_URL')}`)
+      }
+
       // Login and authenticate the user with the data provided by the provider
       const userData = await ally.use(params.provider).user()
 
