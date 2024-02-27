@@ -49,8 +49,10 @@ export default class TeamsController {
           id: team.id,
           name: team.name,
           code: team.code,
+          isAdmin: team.$extras.pivot_team_role_id === 2,
           players: players.map((player) => {
             return {
+              id: player.id,
               name: player.name,
               email: player.email,
               avatar_url: player.avatarUrl,
@@ -97,6 +99,38 @@ export default class TeamsController {
 
     // Link the user to the team
     await user.related('teams').detach([team.id])
+
+    return {
+      team,
+    }
+  }
+
+  public async kickUser({ auth, request }: HttpContextContract) {
+    const { teamId, userId } = request.params()
+    const team = await Team.find(teamId)
+    if (!team) {
+      throw new Error('Team not found')
+    }
+
+    // Get current user
+    const user = auth.user!
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    // Check if the user is an admin
+    if (team.$extras.pivot_team_role_id !== 2) {
+      throw new Error('User is not an admin')
+    }
+
+    // Get the user to kick from the team
+    const userToKick = await team.related('users').query().where('id', userId).first()
+    if (!userToKick) {
+      throw new Error('User not found')
+    }
+
+    // Link the user to the team
+    await userToKick.related('teams').detach([team.id])
 
     return {
       team,
