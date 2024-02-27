@@ -38,6 +38,7 @@ Route.group(() => {
   Route.post('/teams/:code', 'TeamsController.joinTeam')
   Route.delete('/teams/:code', 'TeamsController.leaveTeam')
   Route.get('/teams', 'TeamsController.getTeams')
+  Route.delete('/teams/:teamId/users/:userId', 'TeamsController.kickUser')
 
   Route.get('/teams/:teamId/tracker', 'TrackerController.getTrackerResults')
   Route.post('/teams/:teamId/tracker', 'TrackerController.addTrackerResults')
