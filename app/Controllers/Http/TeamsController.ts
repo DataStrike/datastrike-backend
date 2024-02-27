@@ -23,6 +23,9 @@ export default class TeamsController {
     // Link the user to the team
     await user.related('teams').attach([team.id])
 
+    // Make the user an admin of the team
+    await TeamsService.makeAdmin(team.id, user.id)
+
     return {
       team,
     }
