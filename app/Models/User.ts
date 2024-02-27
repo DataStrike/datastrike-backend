@@ -47,7 +47,9 @@ export default class User extends BaseModel {
   @hasMany(() => UserProviders)
   public providers: HasMany<typeof UserProviders>
 
-  @manyToMany(() => Team)
+  @manyToMany(() => Team, {
+    pivotColumns: ['team_role_id'],
+  })
   public teams: ManyToMany<typeof Team>
 
   @column.dateTime({ autoCreate: true })

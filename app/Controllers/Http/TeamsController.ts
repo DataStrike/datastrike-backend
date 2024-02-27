@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Team from 'App/Models/Team'
 import TeamsService from 'App/Services/TeamsService'
+import User from 'App/Models/User'
 
 export default class TeamsController {
   public async addTeam({ request, auth }: HttpContextContract) {
@@ -22,6 +23,9 @@ export default class TeamsController {
 
     // Link the user to the team
     await user.related('teams').attach([team.id])
+
+    // Make the user an admin of the team
+    await TeamsService.makeAdmin(team.id, user.id)
 
     return {
       team,
@@ -46,11 +50,14 @@ export default class TeamsController {
           id: team.id,
           name: team.name,
           code: team.code,
+          isAdmin: team.$extras.pivot_team_role_id === 2,
           players: players.map((player) => {
             return {
+              id: player.id,
               name: player.name,
               email: player.email,
               avatar_url: player.avatarUrl,
+              isAdmin: player.$extras.team_role_id === 2,
             }
           }),
         }
@@ -94,6 +101,51 @@ export default class TeamsController {
 
     // Link the user to the team
     await user.related('teams').detach([team.id])
+
+    return {
+      team,
+    }
+  }
+
+  public async kickUser({ auth, request }: HttpContextContract) {
+    const { teamId, userId } = request.params()
+    const team = await Team.find(teamId)
+    if (!team) {
+      throw new Error('Team not found')
+    }
+
+    // Get current user
+    const user = auth.user!
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    // Get the user to kick from the team
+    const userToKick = await User.findOrFail(userId)
+
+    // Link the user to the team
+    await userToKick.related('teams').detach([team.id])
+
+    return {
+      team,
+    }
+  }
+
+  public async markAdmin({ auth, request }: HttpContextContract) {
+    const { teamId, userId } = request.params()
+    const team = await Team.find(teamId)
+    if (!team) {
+      throw new Error('Team not found')
+    }
+
+    // Get current user
+    const user = auth.user!
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    // Make the user an admin of the team
+    await TeamsService.makeAdmin(team.id, userId)
 
     return {
       team,
