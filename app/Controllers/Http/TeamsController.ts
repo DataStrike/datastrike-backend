@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Team from 'App/Models/Team'
 import TeamsService from 'App/Services/TeamsService'
+import User from 'App/Models/User'
 
 export default class TeamsController {
   public async addTeam({ request, auth }: HttpContextContract) {
@@ -56,6 +57,7 @@ export default class TeamsController {
               name: player.name,
               email: player.email,
               avatar_url: player.avatarUrl,
+              isAdmin: player.$extras.team_role_id === 2,
             }
           }),
         }
@@ -118,19 +120,32 @@ export default class TeamsController {
       throw new Error('User not found')
     }
 
-    // Check if the user is an admin
-    if (team.$extras.pivot_team_role_id !== 2) {
-      throw new Error('User is not an admin')
-    }
-
     // Get the user to kick from the team
-    const userToKick = await team.related('users').query().where('id', userId).first()
-    if (!userToKick) {
-      throw new Error('User not found')
-    }
+    const userToKick = await User.findOrFail(userId)
 
     // Link the user to the team
     await userToKick.related('teams').detach([team.id])
+
+    return {
+      team,
+    }
+  }
+
+  public async markAdmin({ auth, request }: HttpContextContract) {
+    const { teamId, userId } = request.params()
+    const team = await Team.find(teamId)
+    if (!team) {
+      throw new Error('Team not found')
+    }
+
+    // Get current user
+    const user = auth.user!
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    // Make the user an admin of the team
+    await TeamsService.makeAdmin(team.id, userId)
 
     return {
       team,
