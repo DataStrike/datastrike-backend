@@ -7,6 +7,14 @@ class TeamsService {
       .innerJoin('team_user', 'users.id', 'team_user.user_id')
       .where('team_user.team_id', teamId)
   }
+
+  public async makeAdmin(teamId: number, userId: number): Promise<void> {
+    await User.query()
+      .from('team_user')
+      .where('team_id', teamId)
+      .where('user_id', userId)
+      .update('team_role_id', 2)
+  }
 }
 
 export default new TeamsService()
