@@ -2,6 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import UserProviders from 'App/Models/UserProviders'
 import Env from '@ioc:Adonis/Core/Env'
+import { ApiUser } from 'App/Models/Exposition/User/ApiUser'
 
 export default class UsersController {
   public async redirect({ ally, params }: HttpContextContract) {
@@ -86,11 +87,6 @@ export default class UsersController {
       return Error('User not found')
     }
 
-    return {
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-      isAdmin: user.isAdmin,
-    }
+    return new ApiUser(user)
   }
 }
