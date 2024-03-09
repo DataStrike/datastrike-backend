@@ -1,6 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import TrackerResult from 'App/Models/TrackerResult'
-import { determineResult } from '../../../utils/tracker-results'
+import { ApiTracker } from 'App/Models/Exposition/Tracker/ApiTracker'
 export default class TrackerController {
   public async getTrackerResults({ request, auth }: HttpContextContract) {
     const { teamId } = request.params()
@@ -15,20 +15,7 @@ export default class TrackerController {
     const tracker = await team.related('trackerResults').query()
 
     return tracker.map((result) => {
-      return {
-        id: result.id,
-        opponentTeamName: result.opponentTeam,
-        date: result.date,
-        mapName: result.mapName,
-        usScore: result.team1_score,
-        themScore: result.team2_score,
-        usInfo: result.team1_info,
-        themInfo: result.team2_info,
-        replayCode: result.replay_code,
-        vodLink: result.vod_link,
-        result: determineResult(result.team1_score, result.team2_score),
-        info: result.info,
-      }
+      return new ApiTracker(result)
     })
   }
 

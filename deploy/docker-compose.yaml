@@ -27,6 +27,7 @@ services:
       - zookeeper
     ports:
       - 29092:29092
+    restart: always
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -42,6 +43,7 @@ services:
       dockerfile: Dockerfile
 
     command: /bin/bash -c "cd /datastrike-python/ && python3 main.py"
+    restart: always
     volumes:
       - ../../datastrike-python-processing/src/:/datastrike-python
       - ../../map/:/map
