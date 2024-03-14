@@ -33,22 +33,32 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/me', 'UsersController.me')
+
   Route.get('/logout', 'UsersController.logout')
+
   Route.post('/teams', 'TeamsController.addTeam')
+
   Route.post('/teams/:code', 'TeamsController.joinTeam')
   Route.delete('/teams/:code', 'TeamsController.leaveTeam')
+
   Route.get('/teams', 'TeamsController.getTeams')
+
   Route.delete('/teams/:teamId/users/:userId', 'TeamsController.kickUser')
   Route.put('/teams/:teamId/users/:userId', 'TeamsController.markAdmin')
+
   Route.put('/teams/:teamId/code', 'TeamsController.regenerateCode')
+
+  Route.put('/teams/:teamId', 'TeamsController.updateTeam')
 
   Route.get('/teams/:teamId/tracker', 'TrackerController.getTrackerResults')
   Route.post('/teams/:teamId/tracker', 'TrackerController.addTrackerResults')
+
   Route.delete('/tracker/:trackerResultId', 'TrackerController.deleteTrackerResults')
 
   Route.get('/teams/:teamId/maps', 'MapsController.index')
-  Route.get('/maps/:mapId', 'MapsController.getMap')
   Route.post('/teams/:teamId/maps', 'OverwatchAnalyseController.newOverwatchAnalyse')
+
+  Route.get('/maps/:mapId', 'MapsController.getMap')
 }).middleware('auth')
 
 Route.group(() => {
