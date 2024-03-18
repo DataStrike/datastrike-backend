@@ -128,4 +128,35 @@ export default class TeamsController {
 
     return new ApiTeam(team)
   }
+
+  public async regenerateCode({ request }: HttpContextContract) {
+    const { teamId } = request.params()
+    const team = await Team.find(teamId)
+    if (!team) {
+      throw new Error('Team not found')
+    }
+
+    // Generate a random code of 6 characters
+    team.code = Math.random().toString(36).substring(2, 8)
+    await team.save()
+
+    return new ApiTeam(team)
+  }
+
+  public async updateTeam({ request }: HttpContextContract) {
+    const { teamId } = request.params()
+    const { name } = request.all()
+    const team = await Team.find(teamId)
+    if (!team) {
+      throw new Error('Team not found')
+    }
+
+    console.log('team', team)
+    console.log('name', name)
+
+    team.name = name
+    await team.save()
+
+    return new ApiTeam(team)
+  }
 }
