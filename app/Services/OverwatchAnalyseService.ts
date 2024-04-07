@@ -8,6 +8,7 @@ class OverwatchAnalyse {
 
     if ('error' in map) {
       console.error('Erreur lors du traitement de la map :', map.error)
+      Ws.io.emit('analysisData', 'error')
     } else {
       const whereClause = {
         date: map.date,
